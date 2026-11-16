@@ -1,0 +1,438 @@
+---
+
+### 2. ملف `index.html`
+*(كود شغّال 100% — بيشتغل أوفلاين وأونلاين وعلى GitHub Pages)*
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browser Fun Lab — Quirky Web Experiments</title>
+  <style>
+    :root {
+      --bg: #0f1024;
+      --card: #181a38;
+      --border: #2c2f5e;
+      --text: #f4f5ff;
+      --muted: #9aa0c8;
+      --cyan: #22d3ee;
+      --pink: #f43f5e;
+      --amber: #fbbf24;
+      --green: #34d399;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.12), transparent 40%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.4);
+      color: var(--cyan);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      border-color: var(--cyan);
+      color: #fff;
+      background: rgba(34, 211, 238, 0.12);
+    }
+
+    .panel {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel h2 {
+      font-size: 1.35rem;
+      margin-bottom: 6px;
+    }
+
+    .panel-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Sound Lab */
+    .freq-display {
+      font-family: monospace;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--cyan);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--cyan);
+      margin-bottom: 18px;
+      cursor: pointer;
+    }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.9; }
+    .btn-primary { background: var(--cyan); color: #09101f; }
+    .btn-danger { background: var(--pink); color: #fff; }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* Click Lab */
+    .click-pad {
+      background: #10122b;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 16px;
+      transition: border-color 0.15s, transform 0.05s;
+    }
+
+    .click-pad:active {
+      transform: scale(0.99);
+      border-color: var(--cyan);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      background: #10122b;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .stat-val.alert { color: var(--pink); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+    /* Morse Lab */
+    textarea, .morse-out {
+      width: 100%;
+      background: #10122b;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .morse-out {
+      min-height: 80px;
+      font-family: monospace;
+      font-size: 1.15rem;
+      color: var(--green);
+      word-break: break-word;
+    }
+
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .tabs, .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">VANILLA JS • ZERO DEPENDENCIES</span>
+      <h1>🧪 Browser Fun Lab</h1>
+      <p>Three tiny, weirdly satisfying browser experiments you can test right here.</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('sound', this)">🔊 Sound Wave Lab</button>
+      <button class="tab-btn" onclick="switchTab('mouse', this)">🖱️ Mouse Glitch Lab</button>
+      <button class="tab-btn" onclick="switchTab('morse', this)">👾 Morse Code Toy</button>
+    </div>
+
+    <!-- PANEL 1: SOUND -->
+    <section id="sound" class="panel active">
+      <h2>Pure Sine-Wave Tone Generator</h2>
+      <p class="panel-desc">
+        Uses the native Web Audio API to play pure frequencies. Keep your volume moderate before hitting play!
+      </p>
+
+      <div class="freq-display"><span id="freqVal">165</span> Hz</div>
+      <input type="range" id="freqSlider" min="50" max="2000" value="165" oninput="updateFreq(this.value)" />
+
+      <div class="presets">
+        <button class="btn btn-ghost" onclick="setFreq(165)">165 Hz (Low Vibration)</button>
+        <button class="btn btn-ghost" onclick="setFreq(440)">440 Hz (A4 Note)</button>
+        <button class="btn btn-ghost" onclick="setFreq(1000)">1000 Hz (Test Tone)</button>
+      </div>
+
+      <button id="toggleSoundBtn" class="btn btn-primary" onclick="toggleSound()">▶ Play Tone</button>
+    </section>
+
+    <!-- PANEL 2: MOUSE -->
+    <section id="mouse" class="panel">
+      <h2>Mouse Double-Click &amp; Switch Tester</h2>
+      <p class="panel-desc">
+        Click inside the pad below. Any two clicks arriving less than <strong>80ms</strong> apart get flagged as a potential hardware double-click bounce.
+      </p>
+
+      <div class="click-pad" onclick="registerClick()">
+        <strong style="font-size: 1.1rem;">CLICK HERE TO TEST</strong>
+        <div id="clickStatus" style="color: var(--muted); font-size: 0.88rem; margin-top: 6px;">Waiting for first click...</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="totalClicks">0</div>
+          <div class="stat-label">Total Clicks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val alert" id="doubleClicks">0</div>
+          <div class="stat-label">Fast Glitches (&lt;80ms)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="lastGap">--</div>
+          <div class="stat-label">Last Gap (ms)</div>
+        </div>
+      </div>
+
+      <button class="btn btn-ghost" onclick="resetMouse()">Reset Counters</button>
+    </section>
+
+    <!-- PANEL 3: MORSE -->
+    <section id="morse" class="panel">
+      <h2>Instant Morse Code Translator</h2>
+      <p class="panel-desc">
+        Type any message below to encode it into classic dots and dashes in real time.
+      </p>
+
+      <textarea id="morseInput" placeholder="Type something fun... e.g. HELLO WORLD" oninput="convertMorse()"></textarea>
+      <div class="morse-out" id="morseOutput">.... . .-.. .-.. --- / .-- --- .-. .-.. -..</div>
+      <button class="btn btn-primary" onclick="copyMorse()">Copy Morse Code</button>
+    </section>
+
+    <footer>
+      Built for fun by Ahmed Elazab (@ahmedelazabdev) • Pure HTML &amp; JS
+    </footer>
+  </div>
+
+  <script>
+    // Tab Switching
+    function switchTab(id, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+      if (id !== 'sound' && isPlaying) toggleSound();
+    }
+
+    // 1. Web Audio Tone Lab
+    let audioCtx = null;
+    let oscillator = null;
+    let gainNode = null;
+    let isPlaying = false;
+
+    function updateFreq(val) {
+      document.getElementById('freqVal').textContent = val;
+      if (oscillator && audioCtx) {
+        oscillator.frequency.setValueAtTime(Number(val), audioCtx.currentTime);
+      }
+    }
+
+    function setFreq(val) {
+      document.getElementById('freqSlider').value = val;
+      updateFreq(val);
+    }
+
+    function toggleSound() {
+      const btn = document.getElementById('toggleSoundBtn');
+      if (!isPlaying) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        oscillator = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(Number(document.getElementById('freqSlider').value), audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        isPlaying = true;
+        btn.textContent = '⏹ Stop Tone';
+        btn.className = 'btn btn-danger';
+      } else {
+        if (oscillator) oscillator.stop();
+        if (audioCtx) audioCtx.close();
+        isPlaying = false;
+        btn.textContent = '▶ Play Tone';
+        btn.className = 'btn btn-primary';
+      }
+    }
+
+    // 2. Mouse Glitch Lab
+    let clicks = 0;
+    let glitches = 0;
+    let lastTime = 0;
+
+    function registerClick() {
+      const now = performance.now();
+      clicks++;
+      document.getElementById('totalClicks').textContent = clicks;
+
+      if (lastTime > 0) {
+        const gap = Math.round(now - lastTime);
+        document.getElementById('lastGap').textContent = gap + 'ms';
+        if (gap < 80) {
+          glitches++;
+          document.getElementById('doubleClicks').textContent = glitches;
+          document.getElementById('clickStatus').innerHTML = `<span style="color: var(--pink);">⚠ Fast bounce detected (${gap}ms)!</span>`;
+        } else {
+          document.getElementById('clickStatus').innerHTML = `<span style="color: var(--green);">✓ Clean click (${gap}ms gap)</span>`;
+        }
+      } else {
+        document.getElementById('clickStatus').textContent = 'Click again to measure gap...';
+      }
+      lastTime = now;
+    }
+
+    function resetMouse() {
+      clicks = 0; glitches = 0; lastTime = 0;
+      document.getElementById('totalClicks').textContent = '0';
+      document.getElementById('doubleClicks').textContent = '0';
+      document.getElementById('lastGap').textContent = '--';
+      document.getElementById('clickStatus').textContent = 'Waiting for first click...';
+    }
+
+    // 3. Morse Code Toy
+    const MORSE_MAP = {
+      A:'.-', B:'-...', C:'-.-.', D:'-..', E:'.', F:'..-.', G:'--.', H:'....',
+      I:'..', J:'.---', K:'-.-', L:'.-..', M:'--', N:'-.', O:'---', P:'.--.',
+      Q:'--.-', R:'.-.', S:'...', T:'-', U:'..-', V:'...-', W:'.--', X:'-..-',
+      Y:'-.--', Z:'--..', '0':'-----', '1':'.----', '2':'..---', '3':'...--',
+      '4':'....-', '5':'.....', '6':'-....', '7':'--...', '8':'---..', '9':'----.',
+      ' ':'/'
+    };
+
+    function convertMorse() {
+      const raw = document.getElementById('morseInput').value.toUpperCase();
+      if (!raw.trim()) {
+        document.getElementById('morseOutput').textContent = '.... . .-.. .-.. --- / .-- --- .-. .-.. -..';
+        return;
+      }
+      const encoded = raw.split('').map(ch => MORSE_MAP[ch] || '').filter(Boolean).join(' ');
+      document.getElementById('morseOutput').textContent = encoded || '...';
+    }
+
+    function copyMorse() {
+      const text = document.getElementById('morseOutput').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Morse code copied to clipboard!');
+      });
+    }
+  </script>
+</body>
+</html>
